@@ -3,23 +3,26 @@
 class Task:
     def __init__(self, _id, deadline, period, WCET):
         self.id = _id
-        self.deadline = deadline
-        self.period = period
-        self.WCET = WCET
-        self.priority = 1.0 / deadline
+        self.deadline = float(deadline)
+        self.period = float(period)
+        self.WCET = float(WCET)
+        self.priority = 1.0 / self.deadline
 
 
 class Core:
-    def __init__(self, _id, WCETFactor):
+    def __init__(self, _id, pid, WCETFactor):
         self.id = _id
-        self.WCETFactor = WCETFactor
+        self.platformId = pid
+        self.WCETFactor = float(WCETFactor)
+        self.tasks = set()  # tasks that were assigned to the current core
+
+    def addTask(self, task):
+        self.tasks.add(task)
 
 
-class Platform:
-    def __init__(self, _id):
+class SolutionTask:
+    def __init__(self, _id, MCP, core, WCRT):
         self.id = _id
-        self.cores = []
-
-    def addCore(self, core):
-        if core:
-            self.cores.append(core)
+        self.MCP = MCP
+        self.core = core
+        self.WCRT = WCRT
