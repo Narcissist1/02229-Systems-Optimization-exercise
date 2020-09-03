@@ -6,14 +6,14 @@ class Mapping:
         self.tasks = tasks
         self.cores = cores
 
-    def dm_guarantee(self):
+    def dm_guarantee(self, tasks):
         '''
         Algorithm  for  testing  the  schedulabihty
         of  a  periodic  task  set  T  under  DeadHne  Monotonic.
         Based on Chapter 4, Figure 4.13
         https://dtudk-my.sharepoint.com/personal/paupo_win_dtu_dk/_layouts/15/onedrive.aspx?originalPath=aHR0cHM6Ly9kdHVkay1teS5zaGFyZXBvaW50LmNvbS86ZjovZy9wZXJzb25hbC9wYXVwb193aW5fZHR1X2RrL0VxaGZHQlM3NXR4RXNtcFgzMy1uYVFRQkswMnVYRzlSODBDMGJXOW1VWXlxYkE%5FcnRpbWU9SmxGYTFWNUsyRWc&id=%2Fpersonal%2Fpaupo%5Fwin%5Fdtu%5Fdk%2FDocuments%2Fteaching%2F02229%20E20%2Fweek%2038%2DTue%2E%20Sept%2E%2015%2D%2DReal%2Dtime%20systems%2FHard%20Real%2DTime%2D%2DPeriodic%20Scheduling%20chapter%2Epdf&parent=%2Fpersonal%2Fpaupo%5Fwin%5Fdtu%5Fdk%2FDocuments%2Fteaching%2F02229%20E20%2Fweek%2038%2DTue%2E%20Sept%2E%2015%2D%2DReal%2Dtime%20systems
         '''
-        for task in self.tasks:
+        for task in tasks:
             I, R = 0, 0
             while(I + task.WCET > R):
                 R = I + task.WCET
