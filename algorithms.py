@@ -43,6 +43,9 @@ class Mapping:
         '''
         pass
 
+    def accProbability(self):
+        pass
+
     def run(self):
         '''
         Simulated Annealing algorithm goes here

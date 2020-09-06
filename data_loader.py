@@ -19,9 +19,18 @@ class DataLoader:
         app, platform = root.find('Application'), root.find('Platform')
         tasks = []
         cores = []
+        prioritySet = set()
         for task in app.findall("Task"):
-            tasks.append(Task(task.attrib['Id'], task.attrib['Deadline'],
-                              task.attrib['Period'], task.attrib['WCET']))
+            t = Task(task.attrib['Id'], task.attrib['Deadline'],
+                     task.attrib['Period'], task.attrib['WCET'])
+            _priority = 1.0 / float(task.attrib['Deadline'])
+            while _priority in prioritySet:
+                _priority = _priority + _priority / 10
+
+            t.setPriority(_priority)
+            prioritySet.add(_priority)
+            tasks.append(t)
+
         for mcp in platform.findall("MCP"):
             for core in mcp.findall("Core"):
                 cores.append(

@@ -8,6 +8,9 @@ class Task:
         self.WCET = float(WCET)
         self.priority = 1.0 / self.deadline
 
+    def setPriority(self, val):
+        self.priority = val
+
 
 class Core:
     def __init__(self, _id, pid, WCETFactor):
