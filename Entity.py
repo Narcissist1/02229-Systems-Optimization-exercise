@@ -6,10 +6,14 @@ class Task:
         self.deadline = float(deadline)
         self.period = float(period)
         self.WCET = float(WCET)
+        self.WCRT = 0 # update during the calculation
         self.priority = 1.0 / self.deadline
 
     def setPriority(self, val):
         self.priority = val
+
+    def setWCRT(self, val):
+        self.WCRT = val
 
 
 class Core:
@@ -22,10 +26,10 @@ class Core:
     def addTask(self, task):
         self.tasks.add(task)
 
+    def removeTask(self, task):
+        self.tasks.remove(task)
 
-class SolutionTask:
-    def __init__(self, _id, MCP, core, WCRT):
-        self.id = _id
-        self.MCP = MCP
-        self.core = core
-        self.WCRT = WCRT
+
+class Solution:
+    def __init__(self, cores):
+        self.cores = cores
