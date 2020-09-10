@@ -38,19 +38,20 @@ class DataLoader:
 
         return tasks, cores
 
-    def dump(self, name, tasks):
+    def dump(self, name, solution):
         '''
         Dump a solution to an xml file
         Input: Filename to write in and a list of SolutionTask
         Output: None
         '''
         solution = ET.Element('solution')
-        for task in tasks:
-            taskElement = ET.SubElement(solution, 'Task')
-            taskElement.set('Id', str(task.id))
-            taskElement.set('MCP', str(task.MCP))
-            taskElement.set('Core', str(task.core))
-            taskElement.set('WCRT', str(task.WCRT))
+        for core in solution.cores:
+            for task in core.tasks:
+                taskElement = ET.SubElement(solution, 'Task')
+                taskElement.set('Id', str(task.id))
+                taskElement.set('MCP', str(core.platformId))
+                taskElement.set('Core', str(core.id))
+                # taskElement.set('WCRT', str(task.WCRT))
 
         tree = ET.ElementTree(solution)
         tree.write(self.path + name + '.xml')

@@ -2,9 +2,11 @@ import math
 
 
 class Mapping:
-    def __init__(self, tasks, cores):
+    def __init__(self, tasks, cores, initTemperature, panelty=10000):
         self.tasks = tasks
         self.cores = cores
+        self.panelty = panelty
+        self.temperature = initTemperature
 
     def dm_guarantee(self, tasks):
         '''
@@ -13,20 +15,24 @@ class Mapping:
         Based on Chapter 4, Figure 4.13
         https://dtudk-my.sharepoint.com/personal/paupo_win_dtu_dk/_layouts/15/onedrive.aspx?originalPath=aHR0cHM6Ly9kdHVkay1teS5zaGFyZXBvaW50LmNvbS86ZjovZy9wZXJzb25hbC9wYXVwb193aW5fZHR1X2RrL0VxaGZHQlM3NXR4RXNtcFgzMy1uYVFRQkswMnVYRzlSODBDMGJXOW1VWXlxYkE%5FcnRpbWU9SmxGYTFWNUsyRWc&id=%2Fpersonal%2Fpaupo%5Fwin%5Fdtu%5Fdk%2FDocuments%2Fteaching%2F02229%20E20%2Fweek%2038%2DTue%2E%20Sept%2E%2015%2D%2DReal%2Dtime%20systems%2FHard%20Real%2DTime%2D%2DPeriodic%20Scheduling%20chapter%2Epdf&parent=%2Fpersonal%2Fpaupo%5Fwin%5Fdtu%5Fdk%2FDocuments%2Fteaching%2F02229%20E20%2Fweek%2038%2DTue%2E%20Sept%2E%2015%2D%2DReal%2Dtime%20systems
         '''
+        laxity = 0
         for task in tasks:
             I, R = 0, 0
             while(I + task.WCET > R):
                 R = I + task.WCET
-                if(R > self.tasks.deadline):
-                    return False
+                if(R > task.deadline):
+                    # unschedulable
+                    return None
                 # update I
                 _I = 0
                 for t in self.tasks:
                     if t.priority > task.priority:
                         _I += math.ceil(R / t.period) * t.WCET
                 I = _I
+            laxity += task.deadline - R
+            task.setWCRT(R)
 
-        return True
+        return laxity
 
     def generate_init_soluton(self):
         pass
@@ -37,14 +43,19 @@ class Mapping:
     def coolDown(self):
         pass
 
-    def cost(self):
+    def cost(self, solution):
         '''
         cost function to measure the quality of a solution
         '''
-        pass
+        laxity = 0
+        for core in solution.cores:
+            val = self.dm_guarantee(core.tasks)
+            laxity += val if val is not None else -self.panelty
 
-    def accProbability(self):
-        pass
+        return laxity
+
+    def accProbability(self, delta, T):
+        return 1.0 / math.exp(abs(delta)/T)
 
     def run(self):
         '''
