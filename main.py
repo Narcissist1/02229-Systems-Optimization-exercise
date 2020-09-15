@@ -5,7 +5,7 @@ from algorithms import Mapping
 def main():
     loader = DataLoader('test_cases/')
     tasks, cores = loader.load('small')
-    mapping = Mapping(tasks, cores)
+    mapping = Mapping(tasks, cores, 10000)
     mapping.run()
 
 

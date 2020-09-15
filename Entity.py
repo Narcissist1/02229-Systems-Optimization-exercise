@@ -6,14 +6,18 @@ class Task:
         self.deadline = float(deadline)
         self.period = float(period)
         self.WCET = float(WCET)
-        self.WCRT = 0 # update during the calculation
+        self.WCRT = 0  # update during the calculation
         self.priority = 1.0 / self.deadline
+        self.WCETOnCore = 0  # update during the calculation
 
     def setPriority(self, val):
         self.priority = val
 
     def setWCRT(self, val):
         self.WCRT = val
+
+    def setWCETOnCore(self, val):
+        self.WCETOnCore = val
 
 
 class Core:
