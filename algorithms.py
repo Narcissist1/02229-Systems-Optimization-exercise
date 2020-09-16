@@ -1,4 +1,7 @@
 import math
+import random
+import numpy as np
+from Entity import Solution
 
 
 class Mapping:
@@ -6,7 +9,7 @@ class Mapping:
         self.tasks = tasks
         self.cores = cores
         self.panelty = panelty
-        self.temperature = initTemperature
+        self.T = initTemperature
 
     def dm_guarantee(self, core):
         '''
@@ -39,7 +42,11 @@ class Mapping:
         return laxity
 
     def generate_init_soluton(self):
-        pass
+        for task in self.tasks:
+            core = random.choice(self.cores)
+            core.tasks.add(task)
+
+        return Solution(self.cores)
 
     def getNeighbor(self):
         pass
@@ -56,13 +63,25 @@ class Mapping:
             val = self.dm_guarantee(core)
             laxity += val if val is not None else -self.panelty
 
+        solution.setLaxity(laxity)
         return laxity
 
-    def accProbability(self, delta, T):
-        return 1.0 / math.exp(abs(delta)/T)
+    def accProbability(self, delta):
+        return 1.0 / math.exp(abs(delta) / self.T)
 
     def run(self):
         '''
         Simulated Annealing algorithm goes here
         '''
-        pass
+        bestSolutionSofar = None
+        curSolution = self.generate_init_soluton()
+        while self.T > 1:
+            neighbor = self.getNeighbor()
+            delta = self.cost(neighbor) - self.cost(curSolution)
+            if delta > 0 or self.accProbability(delta) > np.random.uniform():
+                curSolution = neighbor
+                if bestSolutionSofar is None or bestSolutionSofar.laxity < curSolution.laxity:
+                    bestSolutionSofar = curSolution
+            self.coolDown()
+
+        return bestSolutionSofar

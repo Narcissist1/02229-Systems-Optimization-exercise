@@ -37,3 +37,7 @@ class Core:
 class Solution:
     def __init__(self, cores):
         self.cores = cores
+        self.laxity = 0
+
+    def setLaxity(self, val):
+        self.laxity = val
