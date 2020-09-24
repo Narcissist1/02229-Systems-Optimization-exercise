@@ -1,3 +1,4 @@
+import math
 import xml.etree.ElementTree as ET
 from Entity import Task, Core
 
@@ -5,8 +6,9 @@ path = 'test_cases/'
 
 
 class DataLoader:
-    def __init__(self, path):
+    def __init__(self, path, solution_path="solutions/"):
         self.path = path
+        self.solution_path = solution_path
 
     def load(self, name):
         '''
@@ -44,14 +46,21 @@ class DataLoader:
         Input: Filename to write in and a list of SolutionTask
         Output: None
         '''
-        solution = ET.Element('solution')
+        ETsolution = ET.Element('solution')
+        index = 0
         for core in solution.cores:
             for task in core.tasks:
-                taskElement = ET.SubElement(solution, 'Task')
+                index += 1
+                taskElement = ET.SubElement(ETsolution, 'Task')
                 taskElement.set('Id', str(task.id))
                 taskElement.set('MCP', str(core.platformId))
                 taskElement.set('Core', str(core.id))
-                # taskElement.set('WCRT', str(task.WCRT))
+                taskElement.set('WCRT', str(
+                    math.ceil(task.WCET * core.WCETFactor)))
 
-        tree = ET.ElementTree(solution)
-        tree.write(self.path + name + '.xml')
+        tree = ET.ElementTree(ETsolution)
+        laxity_comment = ET.Comment(
+            'Total Laxity: {laxity}'.format(laxity=int(solution.laxity)))
+        root = tree.getroot()
+        root.insert(index + 1, laxity_comment)
+        tree.write(self.solution_path + name + '.xml')

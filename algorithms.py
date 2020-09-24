@@ -5,11 +5,13 @@ from Entity import Solution
 
 
 class Mapping:
-    def __init__(self, tasks, cores, initTemperature, panelty=10000):
+    def __init__(self, tasks, cores, initTemperature, panelty=100000, r=0.001):
         self.tasks = tasks
         self.cores = cores
         self.panelty = panelty
         self.T = initTemperature
+        self.r = r
+        self.space = set()
 
     def dm_guarantee(self, core):
         '''
@@ -29,6 +31,7 @@ class Mapping:
                 R = I + task.WCETOnCore
                 if(R > task.deadline):
                     # unschedulable
+                    core.setLaxity(self.panelty)
                     return None
                 # update I
                 _I = 0
@@ -37,22 +40,31 @@ class Mapping:
                         _I += math.ceil(R / t.period) * t.WCETOnCore
                 I = _I
             laxity += task.deadline - R
-            task.setWCRT(R)
 
+        core.setLaxity(laxity)
         return laxity
 
     def generate_init_soluton(self):
         for task in self.tasks:
             core = random.choice(self.cores)
-            core.tasks.add(task)
+            core.addTask(task)
 
         return Solution(self.cores)
 
-    def getNeighbor(self):
-        pass
+    def getNeighbor(self, solution):
+        aCore = random.choice(solution.cores)
+        while aCore.isEmpty():
+            aCore = random.choice(solution.cores)
+        bCore = random.choice(solution.cores)
+        while aCore == bCore:
+            bCore = random.choice(solution.cores)
+
+        aTask = aCore.popTask()
+        bCore.addTask(aTask)
+        return solution
 
     def coolDown(self):
-        pass
+        self.T = self.T * (1 - self.r)
 
     def cost(self, solution):
         '''
@@ -61,13 +73,17 @@ class Mapping:
         laxity = 0
         for core in solution.cores:
             val = self.dm_guarantee(core)
-            laxity += val if val is not None else -self.panelty
+            laxity += val if val is not None else - self.panelty
 
         solution.setLaxity(laxity)
         return laxity
 
     def accProbability(self, delta):
-        return 1.0 / math.exp(abs(delta) / self.T)
+        try:
+            ans = math.exp(abs(delta) / self.T)
+        except OverflowError:
+            ans = float('inf')
+        return 1.0 / ans
 
     def run(self):
         '''
@@ -75,8 +91,15 @@ class Mapping:
         '''
         bestSolutionSofar = None
         curSolution = self.generate_init_soluton()
+        self.cost(curSolution)
+        self.space.add(hash(curSolution))
         while self.T > 1:
-            neighbor = self.getNeighbor()
+            neighbor = self.getNeighbor(curSolution)
+            hashVal = hash(neighbor)
+            if hashVal in self.space:
+                continue
+            else:
+                self.space.add(hashVal)
             delta = self.cost(neighbor) - self.cost(curSolution)
             if delta > 0 or self.accProbability(delta) > np.random.uniform():
                 curSolution = neighbor
@@ -84,4 +107,5 @@ class Mapping:
                     bestSolutionSofar = curSolution
             self.coolDown()
 
+        print("Explored {} solutions".format(len(self.space)))
         return bestSolutionSofar
