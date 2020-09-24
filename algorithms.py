@@ -35,7 +35,7 @@ class Mapping:
                     return None
                 # update I
                 _I = 0
-                for t in self.tasks:
+                for t in core.tasks:
                     if t.priority > task.priority:
                         _I += math.ceil(R / t.period) * t.WCETOnCore
                 I = _I

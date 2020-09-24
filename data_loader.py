@@ -48,6 +48,9 @@ class DataLoader:
         '''
         ETsolution = ET.Element('solution')
         index = 0
+        if not solution or solution.laxity < 0:
+            print("No solution found!")
+            raise ValueError
         for core in solution.cores:
             for task in core.tasks:
                 index += 1

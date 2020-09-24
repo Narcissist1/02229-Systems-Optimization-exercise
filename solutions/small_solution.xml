@@ -1,11 +1,12 @@
 <solution>
     <Task Core="1" Id="8" MCP="0" WCRT="845" />
-    <Task Core="2" Id="0" MCP="0" WCRT="101" />
-    <Task Core="3" Id="5" MCP="0" WCRT="264" />
-    <Task Core="3" Id="2" MCP="0" WCRT="29" />
-    <Task Core="0" Id="6" MCP="1" WCRT="362" />
-    <Task Core="0" Id="4" MCP="1" WCRT="250" />
-    <Task Core="1" Id="7" MCP="1" WCRT="4260" />
-    <Task Core="3" Id="1" MCP="1" WCRT="4480" />
-    <Task Core="3" Id="3" MCP="1" WCRT="1746" />
-    <!--Total Laxity: 259937--></solution>
+    <Task Core="1" Id="5" MCP="0" WCRT="312" />
+    <Task Core="1" Id="0" MCP="0" WCRT="110" />
+    <Task Core="1" Id="3" MCP="0" WCRT="1622" />
+    <Task Core="1" Id="1" MCP="0" WCRT="4160" />
+    <Task Core="1" Id="4" MCP="0" WCRT="250" />
+    <Task Core="2" Id="2" MCP="0" WCRT="32" />
+    <Task Core="3" Id="7" MCP="0" WCRT="3125" />
+    <Task Core="1" Id="6" MCP="1" WCRT="417" />
+    <!--Total Laxity: 274778-->
+</solution>
