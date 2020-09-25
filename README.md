@@ -20,6 +20,10 @@ Assignment of real-time tasks to the multicores of an autonomous vehicle platfor
 
 (The code was writen and tested in Python3.7, should be working on any Python 3.x interpreter)
 
+install requirement package
+
+    `pip install -r requirements.txt`
+
 All commands should be running in the root path(path that contains this readme file)
 
 The results in the solutions folder are calculated by running the following commands
